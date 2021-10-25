@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class RaycastService : IRaycastService
 {
     private Camera _camera;
 
-    private const float _maxRaycastDistance = 500;
+    private const float _maxRaycastDistance = 1000;
+
+    private UnityEvent<GameObject> onRaycastHit = new UnityEvent<GameObject>();
 
     public RaycastService(Camera camera)
     {
@@ -15,33 +18,49 @@ public class RaycastService : IRaycastService
 
     public void Raycast()
     {
-        var raycastable = GetRaycastable();
+        var gameObject = GetRaycastableGameObject();
 
-        if (raycastable != null) raycastable.OnRaycastHit();
+        if (gameObject != null) onRaycastHit?.Invoke(gameObject);
     }
 
     public void Raycast(int layerMask)
     {
-        var raycastable = GetRaycastable(layerMask);
+        var gameObject = GetRaycastableGameObject(layerMask);
 
-        if (raycastable != null) raycastable.OnRaycastHit();
+        if (gameObject != null) onRaycastHit?.Invoke(gameObject);
     }
-    private IRaycastable GetRaycastable()
+
+    public void AddOnRaycastHitListener(UnityAction<GameObject> action)
+    {
+        onRaycastHit.AddListener(action);
+    }
+
+    public void RemoveOnRaycastHitListener(UnityAction<GameObject> action)
+    {
+        onRaycastHit.RemoveListener(action);
+    }
+
+    private GameObject GetRaycastableGameObject()
     {
         RaycastHit hit;
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
         if (!Physics.Raycast(ray, out hit, _maxRaycastDistance)) return null;
 
-        return hit.collider.GetComponent<IRaycastable>();
+        if (hit.collider.GetComponents<IRaycastable>() == null) return null;
+
+        return hit.collider.gameObject;
     }
-    private IRaycastable GetRaycastable(int layerMask)
+
+    private GameObject GetRaycastableGameObject(int layerMask)
     {
         RaycastHit hit;
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
         if (!Physics.Raycast(ray, out hit, _maxRaycastDistance, layerMask)) return null;
+        
+        if (hit.collider.GetComponents<IRaycastable>() == null) return null;
 
-        return hit.collider.GetComponent<IRaycastable>();
+        return hit.collider.gameObject;
     }
 }
