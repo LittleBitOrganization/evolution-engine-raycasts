@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class RaycastService : IRaycastService
 {
@@ -10,9 +11,11 @@ public class RaycastService : IRaycastService
     private const float _maxRaycastDistance = 1000;
 
     private UnityEvent<GameObject> onRaycastHit = new UnityEvent<GameObject>();
+    private EventSystem _eventSystem;
 
-    public RaycastService(Camera camera)
+    public RaycastService(Camera camera, EventSystem eventSystem)
     {
+        _eventSystem = eventSystem;
         _camera = camera;
     }
 
@@ -42,6 +45,8 @@ public class RaycastService : IRaycastService
 
     private GameObject GetRaycastableGameObject()
     {
+        if (_eventSystem.IsPointerOverGameObject()) return null;
+
         RaycastHit hit;
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
@@ -58,7 +63,7 @@ public class RaycastService : IRaycastService
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
         if (!Physics.Raycast(ray, out hit, _maxRaycastDistance, layerMask)) return null;
-        
+
         if (hit.collider.GetComponents<IRaycastable>() == null) return null;
 
         return hit.collider.gameObject;
