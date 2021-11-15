@@ -45,7 +45,7 @@ public class RaycastService : IRaycastService
 
     private GameObject GetRaycastableGameObject()
     {
-        #if UNITY_ANDROID
+        #if UNITY_ANDROID && !UNITY_EDITOR
         if (_eventSystem.IsPointerOverGameObject(0)) return null;
         #endif
         
