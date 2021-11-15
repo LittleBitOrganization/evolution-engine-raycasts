@@ -45,8 +45,6 @@ public class RaycastService : IRaycastService
 
     private GameObject GetRaycastableGameObject()
     {
-        if (_eventSystem.currentSelectedGameObject != null) return null;
-
         RaycastHit hit;
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
@@ -56,6 +54,7 @@ public class RaycastService : IRaycastService
 
         return hit.collider.gameObject;
     }
+    
 
     private GameObject GetRaycastableGameObject(int layerMask)
     {
