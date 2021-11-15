@@ -45,11 +45,7 @@ public class RaycastService : IRaycastService
 
     private GameObject GetRaycastableGameObject()
     {
-        #if UNITY_EDITOR 
-        if (_eventSystem.IsPointerOverGameObject()) return null;
-        #else 
-        if (_eventSystem.IsPointerOverGameObject(0)) return null;
-        #endif
+        if (_eventSystem.currentSelectedGameObject != null) return null;
 
         RaycastHit hit;
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
