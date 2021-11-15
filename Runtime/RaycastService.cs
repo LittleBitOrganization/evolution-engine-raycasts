@@ -45,7 +45,13 @@ public class RaycastService : IRaycastService
 
     private GameObject GetRaycastableGameObject()
     {
+        #if UNITY_ANDROID
+        if (_eventSystem.IsPointerOverGameObject(0)) return null;
+        #endif
+        
+        #if UNITY_STANDALONE
         if (_eventSystem.IsPointerOverGameObject()) return null;
+        #endif
 
         RaycastHit hit;
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
