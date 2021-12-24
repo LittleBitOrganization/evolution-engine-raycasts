@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Scripting;
 
 public class RaycastService : IRaycastService
 {
@@ -13,6 +12,7 @@ public class RaycastService : IRaycastService
     private UnityEvent<GameObject> onRaycastHit = new UnityEvent<GameObject>();
     private EventSystem _eventSystem;
 
+    [Preserve]
     public RaycastService(Camera camera, EventSystem eventSystem)
     {
         _eventSystem = eventSystem;
