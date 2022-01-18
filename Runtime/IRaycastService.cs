@@ -7,4 +7,6 @@ public interface IRaycastService : IService
     void Raycast(int layerMask);
     void AddOnRaycastHitListener(UnityAction<GameObject> action);
     void RemoveOnRaycastHitListener(UnityAction<GameObject> action);
+    void RemoveRaycastTarget();
+    void SetRaycastTarget(IRaycastable raycastable);
 }
