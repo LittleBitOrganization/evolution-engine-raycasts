@@ -52,9 +52,13 @@ public class RaycastService : IRaycastService
 
         if (!Physics.Raycast(ray, out hit, _maxRaycastDistance)) return null;
 
-        if (hit.collider.GetComponents<IRaycastable>() == null) return null;
+        var raycastable = hit.collider.GetComponent<IRaycastable>();
 
-        return hit.collider.gameObject;
+        if (raycastable == null) return null;
+        
+        if (_raycastTarget == null) return hit.collider.gameObject;
+        
+        return _raycastTarget == raycastable ? hit.collider.gameObject : null;
     }
     
 
